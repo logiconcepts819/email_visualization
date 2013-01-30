@@ -158,8 +158,7 @@ public class LoginController extends PApplet {
 				int iport = parseInt(port.getText());
 				String suser = login.getText();
 				String spass = pass.getText();
-        //TODO initate the email downloader class and download here
-				//authenticate(shost, iport, suser, spass);
+        (new EmailDownloadThread(shost, iport, suser, spass)).start();
 			}
 		}
 	}
