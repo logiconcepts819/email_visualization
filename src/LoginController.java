@@ -81,28 +81,39 @@ public class LoginController implements ControlListener {
     }
 		
     controlP5.mapKeyFor(new ControlKey() { public void keyEvent() {
-      Textfield[] text_fields = {host, port, login, pass};
-      // to tell if we should set the first item in focus
-      boolean text_field_not_found = true;
-
-      for (int i = 0; i < text_fields.length; i++) {
-        Textfield text_field = text_fields[i];
-        if (text_field.isFocus()) {
-          text_field.setFocus(false);
-          text_fields[(i + 1) % text_fields.length].setFocus(true);
-          text_field_not_found = false;
-          break;
-        }
-      }
-
-      if (text_field_not_found) {
-        text_fields[0].setFocus(true);
-      }
+      tab_focus(true);
     }}, parent.TAB);
+
+    controlP5.mapKeyFor(new ControlKey() { public void keyEvent() {
+      tab_focus(false);
+    }}, parent.SHIFT, parent.TAB);
 
     status = controlP5.addTextlabel("statusbar", "Ready", 10, 530);
   }
 
+  // forward = true means tab forward
+  // forward = false means tab backward
+  private void tab_focus(boolean forward) {
+    Textfield[] text_fields = {host, port, login, pass};
+    // to tell if we should set the first item in focus
+    boolean text_field_not_found = true;
+
+    for (int i = 0; i < text_fields.length; i++) {
+      Textfield text_field = text_fields[i];
+      if (text_field.isFocus()) {
+        text_field.setFocus(false);
+        // TODO refactor idx
+        int idx = (text_fields.length + i + (forward ? 1 : -1)) % text_fields.length;
+        text_fields[idx].setFocus(true);
+        text_field_not_found = false;
+        break;
+      }
+    }
+
+    if (text_field_not_found) {
+      text_fields[0].setFocus(true);
+    }
+  }
 
   public void display() {
     controlP5.draw();
