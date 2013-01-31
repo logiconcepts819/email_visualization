@@ -274,6 +274,8 @@ public class TreeMain extends PApplet {
 	public void setup()
 	{
 		size(640, 560);
+    // TODO remove smooth and any excess code
+    // TODO instead use this class to control applet lifecycle
 		smooth();
 		
 		statusTimer = new Timer();
