@@ -15,17 +15,21 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMultipart;
 
+import controlP5.Textlabel;
+
 public class EmailDownloadThread extends Thread {
   private String hostname;
   private int port;
   private String username;
   private String password;
+  private Textlabel status;
 
-  EmailDownloadThread(String hostname, int port, String username, String password) {
+  EmailDownloadThread(String hostname, int port, String username, String password, Textlabel status) {
     this.hostname = hostname;
     this.port = port;
     this.username = username;
     this.password = password;
+    this.status = status;
   }
 
 
@@ -39,10 +43,10 @@ public class EmailDownloadThread extends Thread {
         Store store = session.getStore("pop3s");
 
         //TODO fix the status stuff.
-        //status.setText("Connecting and authenticating...");
-        store.connect(this.hostname, this.port, this.username, this.password);
+        status.setText("Connecting and authenticating...");
+        store.connect(hostname, port, username, password);
 
-        //status.setText("Attempting to retrieve messages...");
+        status.setText("Attempting to retrieve messages...");
 
         Folder folder = store.getFolder("inbox");
         folder.open(Folder.READ_ONLY);
@@ -56,7 +60,7 @@ public class EmailDownloadThread extends Thread {
           Writer output = new BufferedWriter(new FileWriter(file));
           for (int i = 0; i < messages.length; i++)
           {
-            //status.setText("Retrieving message " + String.valueOf(i) + " of " + String.valueOf(messages.length) + "...");
+            status.setText("Retrieving message " + String.valueOf(i) + " of " + String.valueOf(messages.length) + "...");
 
             Date d;
             d = messages[i].getSentDate();
@@ -159,7 +163,7 @@ public class EmailDownloadThread extends Thread {
             output.write('\n');
           }
           output.close();
-          //status.setText("Ready");
+          status.setText("Ready");
         }
         catch (IOException e)
         {
