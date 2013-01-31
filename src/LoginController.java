@@ -80,13 +80,15 @@ public class LoginController implements ControlListener {
       plist.addItem(prof.nameAt(i), i + 1);
     }
 		
-    controlP5.mapKeyFor(new ControlKey() { public void keyEvent() {
+    controlP5.mapKeyFor(new ControlKey() { @Override
+	public void keyEvent() {
       tab_focus(true);
-    }}, parent.TAB);
+    }}, PConstants.TAB);
 
-    controlP5.mapKeyFor(new ControlKey() { public void keyEvent() {
+    controlP5.mapKeyFor(new ControlKey() { @Override
+	public void keyEvent() {
       tab_focus(false);
-    }}, parent.SHIFT, parent.TAB);
+    }}, PConstants.SHIFT, PConstants.TAB);
 
     status = controlP5.addTextlabel("statusbar", "Ready", 10, 530);
   }
@@ -119,7 +121,8 @@ public class LoginController implements ControlListener {
     controlP5.draw();
   }
 
-  public void controlEvent(ControlEvent theEvent)
+  @Override
+public void controlEvent(ControlEvent theEvent)
   {
     if (theEvent.isGroup())
     {
