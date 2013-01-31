@@ -21,6 +21,7 @@ public class LoginController implements ControlListener {
     setup();
   }
   public void setup() {
+    //TODO refactor / cleanup this method
     ControlFont cf = new ControlFont(parent.createFont("Arial", 16));
     controlP5.setFont(cf);
 		
@@ -79,6 +80,26 @@ public class LoginController implements ControlListener {
       plist.addItem(prof.nameAt(i), i + 1);
     }
 		
+    controlP5.mapKeyFor(new ControlKey() { public void keyEvent() {
+      Textfield[] text_fields = {host, port, login, pass};
+      // to tell if we should set the first item in focus
+      boolean text_field_not_found = true;
+
+      for (int i = 0; i < text_fields.length; i++) {
+        Textfield text_field = text_fields[i];
+        if (text_field.isFocus()) {
+          text_field.setFocus(false);
+          text_fields[(i + 1) % text_fields.length].setFocus(true);
+          text_field_not_found = false;
+          break;
+        }
+      }
+
+      if (text_field_not_found) {
+        text_fields[0].setFocus(true);
+      }
+    }}, parent.TAB);
+
     status = controlP5.addTextlabel("statusbar", "Ready", 10, 530);
   }
 
@@ -122,52 +143,4 @@ public class LoginController implements ControlListener {
       }
     }
   }
-  
-  //@Override
-  //public void keyPressed()
-  //{
-    //// Unfortunately, controlP5 doesn't implement tab to navigate, so this
-    //// method and the following method (keyReleased) along with the state
-    //// variable 'shift_active' provide one workaround
-    //if (keyCode == SHIFT)
-    //{
-      //shift_active = true;
-    //}
-    //else if (key == TAB)
-    //{
-      //if (host.isFocus())
-      //{
-        //pass.setFocus(shift_active);
-        //host.setFocus(false);
-        //port.setFocus(!shift_active);
-      //}
-      //else if (port.isFocus())
-      //{
-        //host.setFocus(shift_active);
-        //port.setFocus(false);
-        //login.setFocus(!shift_active);
-      //}
-      //else if (login.isFocus())
-      //{
-        //port.setFocus(shift_active);
-        //login.setFocus(false);
-        //pass.setFocus(!shift_active);
-      //}
-      //else
-      //{
-        //login.setFocus(shift_active);
-        //pass.setFocus(false);
-        //host.setFocus(!shift_active);
-      //}
-    //}
-  //}
-  
-  //@Override
-  //public void keyReleased()
-  //{
-    //if (keyCode == SHIFT)
-    //{
-      //shift_active = false;
-    //}
-  //}
 }
