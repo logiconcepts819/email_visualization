@@ -1,18 +1,11 @@
 import processing.core.PApplet;
 import processing.core.PConstants;
 
-import controlP5.Button;
-import controlP5.Canvas;
-import controlP5.ControlEvent;
-import controlP5.ControlFont;
-import controlP5.ControlListener;
-import controlP5.ControlP5;
-import controlP5.ListBox;
-import controlP5.Textfield;
-import controlP5.Textlabel;
+import controlP5.*;
 
-public class LoginController extends Canvas implements ControlListener {
-  private ControlP5 controlP5 = null;
+public class LoginController implements ControlListener {
+  private PApplet parent;
+  private ControlP5 controlP5;
   private Textlabel title_lbl1, title_lbl2;
   private ListBox plist;
   private Textfield host, port, login, pass;
@@ -21,12 +14,13 @@ public class LoginController extends Canvas implements ControlListener {
   private POP3Profiles prof;
   
 
-  LoginController(ControlP5 controlP5) {
-    this.controlP5 = controlP5;
+  LoginController(PApplet parent) {
+    this.controlP5 = new ControlP5(parent);
+    this.controlP5.addListener(this).setAutoDraw(false);
+    this.parent = parent;
+    setup();
   }
-  public void setup(PApplet parent) {
-    controlP5.addListener(this);
-		
+  public void setup() {
     ControlFont cf = new ControlFont(parent.createFont("Arial", 16));
     controlP5.setFont(cf);
 		
@@ -88,9 +82,10 @@ public class LoginController extends Canvas implements ControlListener {
     status = controlP5.addTextlabel("statusbar", "Ready", 10, 530);
   }
 
-  public void draw(PApplet parent) {
-  }
 
+  public void display() {
+    controlP5.draw();
+  }
 
   public void controlEvent(ControlEvent theEvent)
   {
