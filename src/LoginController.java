@@ -1,5 +1,10 @@
+import java.awt.Font;
+import java.awt.FontFormatException;
+import java.io.IOException;
+import java.io.InputStream;
 import processing.core.PApplet;
 import processing.core.PConstants;
+import processing.core.PFont;
 
 import controlP5.*;
 
@@ -12,7 +17,8 @@ public class LoginController implements ControlListener {
   private Button submit;
   private Textlabel status;
   private POP3Profiles prof;
-  
+
+  private static final String FONTRESOURCE = "/HLM_____.TTF"; 
 
   LoginController(PApplet parent) {
     this.controlP5 = new ControlP5(parent);
@@ -20,14 +26,33 @@ public class LoginController implements ControlListener {
     this.parent = parent;
     setup();
   }
+  
+  private Font getCP5Font()
+  {
+    InputStream input = getClass().getResourceAsStream(FONTRESOURCE);
+    Font font;
+    try {
+      font = Font.createFont(Font.TRUETYPE_FONT, input);
+    } catch (FontFormatException | IOException e) {
+      font = new Font("Arial", Font.BOLD, 17);
+      e.printStackTrace();
+    }
+    return font;
+  }
+  
+  private PFont getCP5PFont()
+  {
+    return new PFont(getCP5Font(), true);
+  }
+  
   public void setup() {
     //TODO refactor / cleanup this method
-    ControlFont cf = new ControlFont(parent.createFont("Arial", 16));
+    ControlFont cf = new ControlFont(getCP5PFont());
     controlP5.setFont(cf);
 		
     cf.setSize(72);
     title_lbl1 = controlP5.addTextlabel("tree", "TREE");
-    cf.setSize(16);
+    cf.setSize(17);
     title_lbl2 = controlP5.addTextlabel("tree2", "TREE Representation of Everlasting Emails");
 		
     int w1 = ControlFont.getWidthFor(title_lbl1.getValueLabel().getText(), title_lbl1.getValueLabel(), parent);
@@ -42,14 +67,14 @@ public class LoginController implements ControlListener {
     controlP5.addTextlabel("loginlabel", "Username:", 20, 350);
     controlP5.addTextlabel("passwordlabel", "Password: ", 20, 400);
     
-    plist = controlP5.addListBox("profilelist", 110, 150, 500, 80);
-    host = controlP5.addTextfield("hostbox", 110, 240, 500, 40);
-    port = controlP5.addTextfield("portbox", 110, 290, 500, 40);
-    login = controlP5.addTextfield("loginbox", 110, 340, 500, 40);
-    pass = controlP5.addTextfield("passwordbox", 110, 390, 500, 40);
+    plist = controlP5.addListBox("profilelist", 120, 150, 490, 80);
+    host = controlP5.addTextfield("hostbox", 120, 240, 490, 40);
+    port = controlP5.addTextfield("portbox", 120, 290, 490, 40);
+    login = controlP5.addTextfield("loginbox", 120, 340, 490, 40);
+    pass = controlP5.addTextfield("passwordbox", 120, 390, 490, 40);
     cf.setSize(36);
     submit = controlP5.addButton("submitbtn");
-    cf.setSize(16);
+    cf.setSize(17);
     pass.setPasswordMode(true);
 		
     submit.setCaptionLabel("Login");
