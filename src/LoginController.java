@@ -9,6 +9,8 @@ import processing.core.PFont;
 import controlP5.*;
 
 public class LoginController implements ControlListener {
+  private static final String FONTRESOURCE = "/uhvb8a.pfb"; 
+
   private PApplet parent;
   private ControlP5 controlP5;
   private Textlabel title_lbl1, title_lbl2;
@@ -18,17 +20,93 @@ public class LoginController implements ControlListener {
   private Textlabel status;
   private POP3Profiles prof;
 
-  private static final String FONTRESOURCE = "/uhvb8a.pfb"; 
-
   LoginController(PApplet parent) {
     this.controlP5 = new ControlP5(parent);
     this.controlP5.addListener(this).setAutoDraw(false);
     this.parent = parent;
     setup();
   }
-  
-  private Font getCP5Font()
-  {
+
+  public void setup() {
+    //TODO refactor / cleanup this method
+    ControlFont cf = new ControlFont(getCP5PFont());
+    controlP5.setFont(cf);
+
+    cf.setSize(72);
+    title_lbl1 = controlP5.addTextlabel("tree", "TREE");
+    cf.setSize(16);
+    title_lbl2 = controlP5.addTextlabel("tree2", "TREE Representation of Everlasting Emails");
+
+    int w1 = ControlFont.getWidthFor(title_lbl1.getValueLabel().getText(), title_lbl1.getValueLabel(), parent);
+    int w2 = ControlFont.getWidthFor(title_lbl2.getValueLabel().getText(), title_lbl2.getValueLabel(), parent);
+
+    title_lbl1.setPosition((parent.width - w1) / 2.0f, 20.0f);
+    title_lbl2.setPosition((parent.width - w2) / 2.0f, 100.0f);
+
+    controlP5.addTextlabel("plistlabel", "Profile list:", 20, 150);
+    controlP5.addTextlabel("hostlabel", "Hostname:", 20, 250);
+    controlP5.addTextlabel("portlabel", "Port:", 20, 300);
+    controlP5.addTextlabel("loginlabel", "Username:", 20, 350);
+    controlP5.addTextlabel("passwordlabel", "Password: ", 20, 400);
+
+    plist = controlP5.addListBox("profilelist", 120, 150, 490, 80);
+    host = controlP5.addTextfield("hostbox", 120, 240, 490, 40);
+    port = controlP5.addTextfield("portbox", 120, 290, 490, 40);
+    login = controlP5.addTextfield("loginbox", 120, 340, 490, 40);
+    pass = controlP5.addTextfield("passwordbox", 120, 390, 490, 40);
+    cf.setSize(36);
+    submit = controlP5.addButton("submitbtn");
+    cf.setSize(16);
+    pass.setPasswordMode(true);
+
+    submit.setCaptionLabel("Login");
+    submit.getCaptionLabel().align(PConstants.CENTER, PConstants.CENTER);
+    submit.setSize(200, 70);
+    submit.setPosition((parent.width - submit.getWidth()) / 2.0f, 440);
+    submit.setColorForeground(0xff606060);
+    submit.setColorBackground(0xff404040);
+
+    plist.getCaptionLabel().hide();
+    host.getCaptionLabel().hide();
+    port.getCaptionLabel().hide();
+    login.getCaptionLabel().hide();
+    pass.getCaptionLabel().hide();
+
+    plist.setColorForeground(0xff606060);
+    plist.setColorBackground(0xff404040);
+    host.setColorBackground(0xff404040);
+    port.setColorBackground(0xff404040);
+    login.setColorBackground(0xff404040);
+    pass.setColorBackground(0xff404040);
+
+    prof = new POP3Profiles();
+    plist.hideBar();
+    plist.addItem("-- Select an item --", 0);
+    for (int i = 0; i < prof.getLength(); i++)
+    {
+      plist.addItem(prof.nameAt(i), i + 1);
+    }
+
+    controlP5.mapKeyFor(new ControlKey() {
+      @Override
+      public void keyEvent() {
+        tab_focus(true);
+      }}, PConstants.TAB);
+
+    controlP5.mapKeyFor(new ControlKey() {
+      @Override
+      public void keyEvent() {
+        tab_focus(false);
+      }}, PConstants.SHIFT, PConstants.TAB);
+
+    status = controlP5.addTextlabel("statusbar", "Ready", 10, 530);
+  }
+
+  public void display() {
+    controlP5.draw();
+  }
+
+  private Font getCP5Font() {
     InputStream input = getClass().getResourceAsStream(FONTRESOURCE);
     Font font;
     try {
@@ -39,83 +117,9 @@ public class LoginController implements ControlListener {
     }
     return font;
   }
-  
-  private PFont getCP5PFont()
-  {
+
+  private PFont getCP5PFont() {
     return new PFont(getCP5Font(), true);
-  }
-  
-  public void setup() {
-    //TODO refactor / cleanup this method
-    ControlFont cf = new ControlFont(getCP5PFont());
-    controlP5.setFont(cf);
-		
-    cf.setSize(72);
-    title_lbl1 = controlP5.addTextlabel("tree", "TREE");
-    cf.setSize(16);
-    title_lbl2 = controlP5.addTextlabel("tree2", "TREE Representation of Everlasting Emails");
-		
-    int w1 = ControlFont.getWidthFor(title_lbl1.getValueLabel().getText(), title_lbl1.getValueLabel(), parent);
-    int w2 = ControlFont.getWidthFor(title_lbl2.getValueLabel().getText(), title_lbl2.getValueLabel(), parent);
-		
-    title_lbl1.setPosition((parent.width - w1) / 2.0f, 20.0f);
-    title_lbl2.setPosition((parent.width - w2) / 2.0f, 100.0f);
-		
-    controlP5.addTextlabel("plistlabel", "Profile list:", 20, 150);
-    controlP5.addTextlabel("hostlabel", "Hostname:", 20, 250);
-    controlP5.addTextlabel("portlabel", "Port:", 20, 300);
-    controlP5.addTextlabel("loginlabel", "Username:", 20, 350);
-    controlP5.addTextlabel("passwordlabel", "Password: ", 20, 400);
-    
-    plist = controlP5.addListBox("profilelist", 120, 150, 490, 80);
-    host = controlP5.addTextfield("hostbox", 120, 240, 490, 40);
-    port = controlP5.addTextfield("portbox", 120, 290, 490, 40);
-    login = controlP5.addTextfield("loginbox", 120, 340, 490, 40);
-    pass = controlP5.addTextfield("passwordbox", 120, 390, 490, 40);
-    cf.setSize(36);
-    submit = controlP5.addButton("submitbtn");
-    cf.setSize(16);
-    pass.setPasswordMode(true);
-		
-    submit.setCaptionLabel("Login");
-    submit.getCaptionLabel().align(PConstants.CENTER, PConstants.CENTER);
-    submit.setSize(200, 70);
-    submit.setPosition((parent.width - submit.getWidth()) / 2.0f, 440);
-    submit.setColorForeground(0xff606060);
-    submit.setColorBackground(0xff404040);
-		
-    plist.getCaptionLabel().hide();
-    host.getCaptionLabel().hide();
-    port.getCaptionLabel().hide();
-    login.getCaptionLabel().hide();
-    pass.getCaptionLabel().hide();
-		
-    plist.setColorForeground(0xff606060);
-    plist.setColorBackground(0xff404040);
-    host.setColorBackground(0xff404040);
-    port.setColorBackground(0xff404040);
-    login.setColorBackground(0xff404040);
-    pass.setColorBackground(0xff404040);
-		
-    prof = new POP3Profiles();
-    plist.hideBar();
-    plist.addItem("-- Select an item --", 0);
-    for (int i = 0; i < prof.getLength(); i++)
-    {
-      plist.addItem(prof.nameAt(i), i + 1);
-    }
-		
-    controlP5.mapKeyFor(new ControlKey() { @Override
-	public void keyEvent() {
-      tab_focus(true);
-    }}, PConstants.TAB);
-
-    controlP5.mapKeyFor(new ControlKey() { @Override
-	public void keyEvent() {
-      tab_focus(false);
-    }}, PConstants.SHIFT, PConstants.TAB);
-
-    status = controlP5.addTextlabel("statusbar", "Ready", 10, 530);
   }
 
   // forward = true means tab forward
@@ -142,13 +146,8 @@ public class LoginController implements ControlListener {
     }
   }
 
-  public void display() {
-    controlP5.draw();
-  }
-
   @Override
-public void controlEvent(ControlEvent theEvent)
-  {
+  public void controlEvent(ControlEvent theEvent) {
     if (theEvent.isGroup())
     {
       if (theEvent.getGroup().equals(plist))
@@ -159,7 +158,7 @@ public void controlEvent(ControlEvent theEvent)
           idx--;
           host.setText(prof.hostnameAt(idx));
           port.setText(String.valueOf(prof.portAt(idx)));
-          
+
           if (login.getText().isEmpty() || pass.getText().isEmpty())
           {
             host.setFocus(false);
@@ -183,3 +182,4 @@ public void controlEvent(ControlEvent theEvent)
     }
   }
 }
+
