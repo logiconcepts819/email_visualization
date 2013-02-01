@@ -5,6 +5,7 @@ import javax.mail.*;
 import controlP5.Textlabel;
 
 public class EmailDownloadThread extends Thread {
+  private String proto;
   private String hostname;
   private int port;
   private String username;
@@ -14,7 +15,8 @@ public class EmailDownloadThread extends Thread {
   private Folder[] folders;
   private int message_count = 0;
 
-  EmailDownloadThread(String hostname, int port, String username, String password, Textlabel status) {
+  EmailDownloadThread(String proto, String hostname, int port, String username, String password, Textlabel status) {
+	this.proto = proto;
     this.hostname = hostname;
     this.port = port;
     this.username = username;
@@ -43,7 +45,7 @@ public class EmailDownloadThread extends Thread {
     //can't get good data (I don't leave everything in my inbox...) so correct
     //this.
     //ref: http://stackoverflow.com/questions/5925944/how-to-retrieve-gmail-sub-folders-labels-using-pop3
-    store = session.getStore("pop3s");
+    store = session.getStore(proto); // formerly pop3s
     status.setText("Connecting and authenticating...");
     store.connect(hostname, port, username, password);
   }

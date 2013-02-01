@@ -15,10 +15,12 @@ public class LoginController implements ControlListener {
   private ControlP5 controlP5;
   private Textlabel title_lbl1, title_lbl2;
   private ListBox plist;
+  private RadioButton ptype;
   private Textfield host, port, login, pass;
   private Button submit;
   private Textlabel status;
-  private POP3Profiles prof;
+  private ServiceProfiles prof;
+  private boolean change_port;
 
   LoginController(PApplet parent) {
     this.controlP5 = new ControlP5(parent);
@@ -29,6 +31,7 @@ public class LoginController implements ControlListener {
 
   public void setup() {
     //TODO refactor / cleanup this method
+	change_port = true; // change the port by default
     ControlFont cf = new ControlFont(getCP5PFont());
     controlP5.setFont(cf);
 
@@ -44,25 +47,36 @@ public class LoginController implements ControlListener {
     title_lbl2.setPosition((parent.width - w2) / 2.0f, 100.0f);
 
     controlP5.addTextlabel("plistlabel", "Profile list:", 20, 150);
-    controlP5.addTextlabel("hostlabel", "Hostname:", 20, 250);
-    controlP5.addTextlabel("portlabel", "Port:", 20, 300);
-    controlP5.addTextlabel("loginlabel", "Username:", 20, 350);
-    controlP5.addTextlabel("passwordlabel", "Password: ", 20, 400);
+    controlP5.addTextlabel("plisttype", "Protocol:", 20, 250);
+    controlP5.addTextlabel("hostlabel", "Hostname:", 20, 300);
+    controlP5.addTextlabel("portlabel", "Port:", 20, 350);
+    controlP5.addTextlabel("loginlabel", "Username:", 20, 400);
+    controlP5.addTextlabel("passwordlabel", "Password: ", 20, 450);
 
     plist = controlP5.addListBox("profilelist", 120, 150, 490, 80);
-    host = controlP5.addTextfield("hostbox", 120, 240, 490, 40);
-    port = controlP5.addTextfield("portbox", 120, 290, 490, 40);
-    login = controlP5.addTextfield("loginbox", 120, 340, 490, 40);
-    pass = controlP5.addTextfield("passwordbox", 120, 390, 490, 40);
+    ptype = controlP5.addRadio("radioimap", 120, 255);
+    host = controlP5.addTextfield("hostbox", 120, 290, 490, 40);
+    port = controlP5.addTextfield("portbox", 120, 340, 490, 40);
+    login = controlP5.addTextfield("loginbox", 120, 390, 490, 40);
+    pass = controlP5.addTextfield("passwordbox", 120, 440, 490, 40);
     cf.setSize(36);
     submit = controlP5.addButton("submitbtn");
     cf.setSize(16);
     pass.setPasswordMode(true);
 
+    ptype.setItemsPerRow(4);
+    ptype.setSpacingColumn(122);
+    ptype.addItem("IMAP", 0);
+    ptype.addItem("IMAPS", 1);
+    ptype.addItem("POP3", 2);
+    ptype.addItem("POP3S", 3);
+    ptype.activate(1);
+    ptype.setNoneSelectedAllowed(false);
+    
     submit.setCaptionLabel("Login");
     submit.getCaptionLabel().align(PConstants.CENTER, PConstants.CENTER);
     submit.setSize(200, 70);
-    submit.setPosition((parent.width - submit.getWidth()) / 2.0f, 440);
+    submit.setPosition((parent.width - submit.getWidth()) / 2.0f, 490);
     submit.setColorForeground(0xff606060);
     submit.setColorBackground(0xff404040);
 
@@ -79,7 +93,7 @@ public class LoginController implements ControlListener {
     login.setColorBackground(0xff404040);
     pass.setColorBackground(0xff404040);
 
-    prof = new POP3Profiles();
+    prof = new ServiceProfiles();
     plist.hideBar();
     plist.addItem("-- Select an item --", 0);
     for (int i = 0; i < prof.getLength(); i++)
@@ -99,7 +113,7 @@ public class LoginController implements ControlListener {
         tab_focus(false);
       }}, PConstants.SHIFT, PConstants.TAB);
 
-    status = controlP5.addTextlabel("statusbar", "Ready", 10, 530);
+    status = controlP5.addTextlabel("statusbar", "Ready", 10, 580);
   }
 
   public void display() {
@@ -156,6 +170,23 @@ public class LoginController implements ControlListener {
         if (idx != 0)
         {
           idx--;
+          change_port = false;
+          if (prof.protoAt(idx).equals("imap"))
+          {
+        	ptype.activate(0);
+          }
+          else if (prof.protoAt(idx).equals("pop3"))
+          {
+        	ptype.activate(2);
+          }
+          else if (prof.protoAt(idx).equals("pop3s"))
+          {
+        	ptype.activate(3);
+          }
+          else
+          {
+        	ptype.activate(1);
+          }
           host.setText(prof.hostnameAt(idx));
           port.setText(String.valueOf(prof.portAt(idx)));
 
@@ -168,16 +199,46 @@ public class LoginController implements ControlListener {
           }
         }
       }
+      else if (theEvent.getGroup().equals(ptype))
+      {
+    	  if (change_port)
+    	  {
+    		  port.setText(ptype.getState(0) ? "143" :
+    			           ptype.getState(2) ? "110" :
+    			           ptype.getState(3) ? "995" : "993");
+    	  }
+    	  else
+    	  {
+    		  change_port = true;
+    	  }
+      }
     }
     else if (theEvent.isController())
     {
       if (theEvent.getController().equals(submit))
       {
+    	String sproto;
+    	if (ptype.getState(0))
+    	{
+    		sproto = "imap";
+    	}
+    	else if (ptype.getState(2))
+    	{
+    		sproto = "pop3";
+    	}
+    	else if (ptype.getState(3))
+    	{
+    		sproto = "pop3s";
+    	}
+    	else
+    	{
+    		sproto = "imaps";
+    	}
         String shost = host.getText();
         int iport = Integer.parseInt(port.getText());
         String suser = login.getText();
         String spass = pass.getText();
-        (new EmailDownloadThread(shost, iport, suser, spass, status)).start();
+        (new EmailDownloadThread(sproto, shost, iport, suser, spass, status)).start();
       }
     }
   }
