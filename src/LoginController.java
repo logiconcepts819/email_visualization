@@ -18,7 +18,7 @@ public class LoginController implements ControlListener {
   private Textlabel status;
   private POP3Profiles prof;
 
-  private static final String FONTRESOURCE = "/HLM_____.TTF"; 
+  private static final String FONTRESOURCE = "/uhvb8a.pfb"; 
 
   LoginController(PApplet parent) {
     this.controlP5 = new ControlP5(parent);
@@ -32,9 +32,9 @@ public class LoginController implements ControlListener {
     InputStream input = getClass().getResourceAsStream(FONTRESOURCE);
     Font font;
     try {
-      font = Font.createFont(Font.TRUETYPE_FONT, input);
+      font = Font.createFont(Font.TYPE1_FONT, input);
     } catch (FontFormatException | IOException e) {
-      font = new Font("Arial", Font.BOLD, 17);
+      font = new Font("Arial", Font.BOLD, 16);
       e.printStackTrace();
     }
     return font;
@@ -52,7 +52,7 @@ public class LoginController implements ControlListener {
 		
     cf.setSize(72);
     title_lbl1 = controlP5.addTextlabel("tree", "TREE");
-    cf.setSize(17);
+    cf.setSize(16);
     title_lbl2 = controlP5.addTextlabel("tree2", "TREE Representation of Everlasting Emails");
 		
     int w1 = ControlFont.getWidthFor(title_lbl1.getValueLabel().getText(), title_lbl1.getValueLabel(), parent);
@@ -74,7 +74,7 @@ public class LoginController implements ControlListener {
     pass = controlP5.addTextfield("passwordbox", 120, 390, 490, 40);
     cf.setSize(36);
     submit = controlP5.addButton("submitbtn");
-    cf.setSize(17);
+    cf.setSize(16);
     pass.setPasswordMode(true);
 		
     submit.setCaptionLabel("Login");
