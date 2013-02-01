@@ -32,6 +32,7 @@ class Tree
   Tree (PApplet parent, String input, int startX, int startY, int startAngle, float angle, float minSW, int cc)
   {
     //
+	this.parent = parent;
     this.cc = cc;
     this.minSW = minSW;
     this.angle0 = startAngle;
