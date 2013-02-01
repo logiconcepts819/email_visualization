@@ -21,7 +21,7 @@ import processing.core.PApplet;
 
 class Tree
 {
-  private static final int rad = 310;
+  public static final int rad = 310;
   private PApplet parent;
   private String input;
   private int startX, startY, angle0;
