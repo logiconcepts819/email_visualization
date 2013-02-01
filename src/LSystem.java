@@ -1,3 +1,5 @@
+import processing.core.PApplet;
+
 // Taken from http://www.openprocessing.org/sketch/49814
 class LSystem
 {
@@ -27,7 +29,7 @@ class LSystem
 
         if (c != '[' && c != ']' && c != '-' && c!= '+')
         {
-          String sc = str (c);
+          String sc = PApplet.str (c);
           for (int k = 0; k < rl.getRulz().length; k++)
           {
             if (sc.equals (rl.getRulz() [k].l))

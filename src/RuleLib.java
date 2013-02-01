@@ -1,3 +1,5 @@
+import processing.core.PApplet;
+
 // Taken from http://www.openprocessing.org/sketch/49814
 class RuleLib
 {
@@ -16,12 +18,12 @@ class RuleLib
   
   public void addRule (Rule r)
   {
-    append (rulz, r);
+    PApplet.append (rulz, r);
   }
   
   public void removeRule ()
   {
-    shorten (rulz);
+    PApplet.shorten (rulz);
   }
 }
 
