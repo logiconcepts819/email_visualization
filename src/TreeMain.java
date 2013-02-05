@@ -1,3 +1,5 @@
+import java.io.IOException;
+
 import processing.core.PApplet;
 
 @SuppressWarnings("serial")
@@ -10,6 +12,15 @@ public class TreeMain extends PApplet {
   @Override
   public void setup() {
     size(WIDTH, HEIGHT);
+
+    try {
+		Sentiment sentiment = Sentiment.get_instance();
+    System.out.println(sentiment.score("dissilient"));
+
+	} catch (IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
 
     EmailDownloadListener email_listener = new EmailDownloadListener() {
       @Override
