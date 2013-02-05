@@ -103,6 +103,8 @@ public class LoginController implements ControlListener {
       plist.addItem(prof.nameAt(i), i + 1);
     }
 
+    //TODO make enter submit the form.
+
     controlP5.mapKeyFor(new ControlKey() {
       @Override
       public void keyEvent() {

@@ -32,13 +32,30 @@ public class Email implements Visualizable {
 
   @Override
   public float sentiment() {
+    float sentiment_value = 0.0f;
+    int words_found = 0;
+    float average_sentiment = 0.0f;
+
     try {
-		Sentiment sentiment = Sentiment.get_instance();
-	} catch (IOException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	}
-    return 0;
+      Sentiment sentiment = Sentiment.get_instance();
+      String[] word_list = word_list();
+
+      for (String word : word_list) {
+        Float word_score = sentiment.score(word);
+        if (word_score != null) {
+          words_found++;
+          sentiment_value += sentiment.score(word);
+        }
+      }
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+
+    if (words_found != 0) {
+      average_sentiment = sentiment_value / words_found;
+    }
+    return average_sentiment;
   }
 
   @Override
@@ -54,11 +71,13 @@ public class Email implements Visualizable {
   }
 
   private String[] word_list() {
-	return null;
+    return text.split(" ");
   }
 
   // returns the emails textual content
   private String get_text() throws IOException, MessagingException {
+    // TODO make this smarter and parse out HTML from html messages, and not get
+    // the content of attachments
     InputStream stream = message.getInputStream();
     StringWriter writer = new StringWriter();
     IOUtils.copy(stream, writer);
@@ -67,8 +86,11 @@ public class Email implements Visualizable {
 
   private ArrayList<String> get_recipients() throws MessagingException {
     ArrayList<String> recipients = new ArrayList<String>();
-    for (Address address : message.getAllRecipients()) {
-      recipients.add(address.toString());
+    Address[] addresses = message.getAllRecipients();
+    if (addresses != null) {
+      for (Address address : addresses) {
+        recipients.add(address.toString());
+      }
     }
     return recipients;
   }

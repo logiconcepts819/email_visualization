@@ -21,7 +21,7 @@ public class Sentiment {
     }
   }
 
-  public float score(String word) {
+  public Float score(String word) {
 	  return scores.get(clean_text(word));
   }
 
