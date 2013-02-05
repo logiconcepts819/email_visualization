@@ -11,7 +11,18 @@ public class TreeMain extends PApplet {
   public void setup() {
     size(WIDTH, HEIGHT);
 
+    EmailDownloadListener email_listener = new EmailDownloadListener() {
+      @Override
+      public void on_emails_downloaded(EmailCollection email_collection) {
+        System.out.println("FUCK YEAH");
+      }
+
+      @Override
+      public void on_status(String status) {}
+    };
+
     login_controller = new LoginController(this);
+    login_controller.set_download_thread_listener(email_listener);
   }
 
   @Override

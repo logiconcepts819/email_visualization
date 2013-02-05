@@ -1,12 +1,15 @@
+import java.util.ArrayList;
+
 // Represents a collection of emails
 //
 // TODO make an interface to represent emails over time in addition to
 // Visualizable
 public class EmailCollection implements Visualizable {
+  private ArrayList<Email> emails = new ArrayList<Email>();
   // TODO some collection
 
-  public void add_email(Email email) throws Exception {
-    throw new Exception("not implemented");
+  public void add_email(Email email) {
+    emails.add(email);
   }
 
   @Override

@@ -2,6 +2,7 @@ import java.awt.Font;
 import java.awt.FontFormatException;
 import java.io.IOException;
 import java.io.InputStream;
+
 import processing.core.PApplet;
 import processing.core.PConstants;
 import processing.core.PFont;
@@ -21,6 +22,7 @@ public class LoginController implements ControlListener {
   private Textlabel status;
   private ServiceProfiles prof;
   private boolean change_port;
+  private EmailDownloadListener listener;
 
   LoginController(PApplet parent) {
     this.controlP5 = new ControlP5(parent);
@@ -120,6 +122,10 @@ public class LoginController implements ControlListener {
     controlP5.draw();
   }
 
+  public void set_download_thread_listener(EmailDownloadListener listener) {
+    this.listener = listener;
+  }
+
   private Font getCP5Font() {
     InputStream input = getClass().getResourceAsStream(FONTRESOURCE);
     Font font;
@@ -206,29 +212,44 @@ public class LoginController implements ControlListener {
         }
       }
     }
-    else if (theEvent.isController()) {
-      if (theEvent.getController().equals(submit)) {
-        String sproto;
-        // TODO refactor this if/else into a method
-        if (ptype.getState(0)) {
-          sproto = "imap";
-        }
-        else if (ptype.getState(2)) {
-          sproto = "pop3";
-        }
-        else if (ptype.getState(3)) {
-          sproto = "pop3s";
-        }
-        else {
-          sproto = "imaps";
-        }
-        String shost = host.getText();
-        int iport = Integer.parseInt(port.getText());
-        String suser = login.getText();
-        String spass = pass.getText();
-        (new EmailDownloadThread(sproto, shost, iport, suser, spass, status)).start();
-      }
+    else if (theEvent.isController() && theEvent.getController().equals(submit)) {
+      this.download_emails();
     }
+  }
+
+  private void download_emails() {
+    String sproto;
+    // TODO refactor this if/else into a method
+    if (ptype.getState(0)) {
+      sproto = "imap";
+    } else if (ptype.getState(2)) {
+      sproto = "pop3";
+    } else if (ptype.getState(3)) {
+      sproto = "pop3s";
+    } else {
+      sproto = "imaps";
+    }
+
+    String shost = host.getText();
+    int iport = Integer.parseInt(port.getText());
+    String suser = login.getText();
+    String spass = pass.getText();
+    EmailDownloadThread email_downloader = new EmailDownloadThread(sproto, shost, iport, suser, spass);
+    if (this.listener != null) {
+      email_downloader.add_listener(this.listener);
+    }
+
+    email_downloader.add_listener(new EmailDownloadListener() {
+      @Override
+      public void on_emails_downloaded(EmailCollection email_collection) {}
+
+    @Override
+    public void on_status(String mStatus) {
+      status.setText(mStatus);
+    }
+    });
+
+    email_downloader.start();
   }
 }
 
