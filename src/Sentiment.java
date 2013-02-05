@@ -37,7 +37,7 @@ public class Sentiment {
     reader.close();
   }
 
-  private void clean_text(String text) {
+  private String clean_text(String text) {
     // TODO downcase 
     return text;
   }

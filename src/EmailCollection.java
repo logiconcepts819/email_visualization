@@ -13,9 +13,12 @@ public class EmailCollection implements Visualizable {
   }
 
   @Override
-  public int sentiment() {
-    // TODO Auto-generated method stub
-    return 0;
+  public float sentiment() {
+    float sentiment = 0.0f;
+    for (Email email : emails) {
+      sentiment += email.sentiment();
+    }
+    return sentiment;
   }
 
   @Override
@@ -25,7 +28,7 @@ public class EmailCollection implements Visualizable {
   }
 
   @Override
-  public int average_email_length() {
+  public float average_email_length() {
     // TODO Auto-generated method stub
     return 0;
   }

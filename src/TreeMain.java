@@ -14,17 +14,18 @@ public class TreeMain extends PApplet {
     size(WIDTH, HEIGHT);
 
     try {
-		Sentiment sentiment = Sentiment.get_instance();
-    System.out.println(sentiment.score("dissilient"));
+      Sentiment sentiment = Sentiment.get_instance();
+      System.out.println(sentiment.score("dissilient"));
 
-	} catch (IOException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	}
+    } catch (IOException e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
 
     EmailDownloadListener email_listener = new EmailDownloadListener() {
       @Override
       public void on_emails_downloaded(EmailCollection email_collection) {
+        // TODO analyze emails here
         System.out.println("FUCK YEAH");
       }
 

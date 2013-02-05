@@ -9,7 +9,7 @@ public class Email implements Visualizable {
   }
 
   @Override
-  public int sentiment() {
+  public float sentiment() {
     // TODO Auto-generated method stub
     return 0;
   }
@@ -21,7 +21,7 @@ public class Email implements Visualizable {
   }
 
   @Override
-  public int average_email_length() {
+  public float average_email_length() {
     // TODO Auto-generated method stub
     return 0;
   }
