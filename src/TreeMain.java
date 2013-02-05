@@ -7,24 +7,34 @@ public class TreeMain extends PApplet {
   static int WIDTH = 640;
   static int HEIGHT = 640;
 
-  private LoginController login_controller;
+  // TODO turn make a new interface for all controllers to implement
+  private HashMap<string, ControlListener> controllers = new HashMap<string, ControlListener>();
+  private string current_controller;
+  private TreeController tree_controller;
 
   @Override
   public void setup() {
     size(WIDTH, HEIGHT);
 
+    LoginController login_controller = new LoginController(this);
+    TreeController tree_controller = new TreeController(this);
+
+    controllers.put("login_controller", login_controller);
+    controllers.put("tree_controller", new TreeController(this));
+    current_controller = "login_controller";
+
+    // email listener for the login controller
     EmailDownloadListener email_listener = new EmailDownloadListener() {
       @Override
       public void on_emails_downloaded(EmailCollection email_collection) {
-        // TODO analyze emails here
-        System.out.println("FUCK YEAH");
+        tree_controller.set_email_collection(email_collection);
+        current_controller = "tree_controller";
       }
 
       @Override
       public void on_status(String status) {}
     };
 
-    login_controller = new LoginController(this);
     login_controller.set_download_thread_listener(email_listener);
   }
 
@@ -32,7 +42,7 @@ public class TreeMain extends PApplet {
   public void draw() {
     background(0);
     frameRate(30);
-    login_controller.display();
+    controllers.get(current_controller).display();
   }
 }
 
