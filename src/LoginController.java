@@ -31,7 +31,7 @@ public class LoginController implements ControlListener {
 
   public void setup() {
     //TODO refactor / cleanup this method
-	change_port = true; // change the port by default
+    change_port = true; // change the port by default
     ControlFont cf = new ControlFont(getCP5PFont());
     controlP5.setFont(cf);
 
@@ -72,7 +72,7 @@ public class LoginController implements ControlListener {
     ptype.addItem("POP3S", 3);
     ptype.activate(1);
     ptype.setNoneSelectedAllowed(false);
-    
+
     submit.setCaptionLabel("Login");
     submit.getCaptionLabel().align(PConstants.CENTER, PConstants.CENTER);
     submit.setSize(200, 70);
@@ -171,27 +171,23 @@ public class LoginController implements ControlListener {
         {
           idx--;
           change_port = false;
-          if (prof.protoAt(idx).equals("imap"))
-          {
-        	ptype.activate(0);
+          //TODO refactor this if else into a method
+          if (prof.protoAt(idx).equals("imap")) {
+            ptype.activate(0);
           }
-          else if (prof.protoAt(idx).equals("pop3"))
-          {
-        	ptype.activate(2);
+          else if (prof.protoAt(idx).equals("pop3")) {
+            ptype.activate(2);
           }
-          else if (prof.protoAt(idx).equals("pop3s"))
-          {
-        	ptype.activate(3);
+          else if (prof.protoAt(idx).equals("pop3s")) {
+            ptype.activate(3);
           }
-          else
-          {
-        	ptype.activate(1);
+          else {
+            ptype.activate(1);
           }
           host.setText(prof.hostnameAt(idx));
           port.setText(String.valueOf(prof.portAt(idx)));
 
-          if (login.getText().isEmpty() || pass.getText().isEmpty())
-          {
+          if (login.getText().isEmpty() || pass.getText().isEmpty()) {
             host.setFocus(false);
             port.setFocus(false);
             login.setFocus(login.getText().isEmpty());
@@ -199,41 +195,33 @@ public class LoginController implements ControlListener {
           }
         }
       }
-      else if (theEvent.getGroup().equals(ptype))
-      {
-    	  if (change_port)
-    	  {
-    		  port.setText(ptype.getState(0) ? "143" :
-    			           ptype.getState(2) ? "110" :
-    			           ptype.getState(3) ? "995" : "993");
-    	  }
-    	  else
-    	  {
-    		  change_port = true;
-    	  }
+      else if (theEvent.getGroup().equals(ptype)) {
+        if (change_port) {
+          port.setText(ptype.getState(0) ? "143" :
+              ptype.getState(2) ? "110" :
+              ptype.getState(3) ? "995" : "993");
+        }
+        else {
+          change_port = true;
+        }
       }
     }
-    else if (theEvent.isController())
-    {
-      if (theEvent.getController().equals(submit))
-      {
-    	String sproto;
-    	if (ptype.getState(0))
-    	{
-    		sproto = "imap";
-    	}
-    	else if (ptype.getState(2))
-    	{
-    		sproto = "pop3";
-    	}
-    	else if (ptype.getState(3))
-    	{
-    		sproto = "pop3s";
-    	}
-    	else
-    	{
-    		sproto = "imaps";
-    	}
+    else if (theEvent.isController()) {
+      if (theEvent.getController().equals(submit)) {
+        String sproto;
+        // TODO refactor this if/else into a method
+        if (ptype.getState(0)) {
+          sproto = "imap";
+        }
+        else if (ptype.getState(2)) {
+          sproto = "pop3";
+        }
+        else if (ptype.getState(3)) {
+          sproto = "pop3s";
+        }
+        else {
+          sproto = "imaps";
+        }
         String shost = host.getText();
         int iport = Integer.parseInt(port.getText());
         String suser = login.getText();
