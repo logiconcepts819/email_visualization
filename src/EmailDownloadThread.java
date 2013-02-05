@@ -2,6 +2,8 @@ import java.util.ArrayList;
 import javax.mail.*;
 
 public class EmailDownloadThread extends Thread {
+  private static int EMAILS_TO_DOWNLOAD = 100; // while developing, hardcode a limit
+
   private String proto;
   private String hostname;
   private int port;
@@ -70,20 +72,26 @@ public class EmailDownloadThread extends Thread {
 
   private void fetch_messages() throws MessagingException {
     update_status("Attempting to retrieve messages...");
+    int emails_to_download = EMAILS_TO_DOWNLOAD;
     for (Folder folder : folders) {
       // ref: http://stackoverflow.com/questions/4790844/how-to-get-the-list-of-available-folders-in-a-mail-account-using-java-mail
       if ((folder.getType() & javax.mail.Folder.HOLDS_MESSAGES) != 0) {
         folder.open(Folder.READ_ONLY);
 
-        on_message(folder.getMessages()[0]);
-        // TODO uncomment this
-        //for (Message message : folder.getMessages()) {
-        //on_message(message);
-        //}
+        for (Message message : folder.getMessages()) {
+          on_message(message);
+        }
 
         // Note: Leave close(false) -- just in case we do accidentally delete a
         // message, we don't want to delete it in their inbox!
         folder.close(false);
+
+        // hard coding a limit on the number of emails we load for development
+        // purposes
+        emails_to_download--;
+        if (emails_to_download == 0) {
+          return;
+        }
       }
     }
   }
