@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-
 import processing.core.PApplet;
 
 // Taken from http://www.openprocessing.org/sketch/49814
@@ -19,8 +18,7 @@ import processing.core.PApplet;
 //  scale (zoom);
 //  t.display();
 
-class Tree
-{
+class Tree {
   public static final int rad = 310;
   private PApplet parent;
   private String input;
@@ -29,10 +27,8 @@ class Tree
   private ArrayList<Branch> branches;
   private int cc;
 
-  Tree (PApplet parent, String input, int startX, int startY, int startAngle, float angle, float minSW, int cc)
-  {
-    //
-	this.parent = parent;
+  Tree(PApplet parent, String input, int startX, int startY, int startAngle, float angle, float minSW, int cc) {
+    this.parent = parent;
     this.cc = cc;
     this.minSW = minSW;
     this.angle0 = startAngle;
@@ -44,17 +40,14 @@ class Tree
     createBranches();
   }
 
-  public float getAngle ()
-  {
+  public float getAngle() {
     return angle0;
   }
 
-  public float getHight ()
-  {
+  public float getHeight() {
     float high = startY+PApplet.cos (PApplet.radians (angle0))*rad;
     Branch b;
-    for (int i = 0; i < branches.size(); i++)
-    {
+    for (int i = 0; i < branches.size(); i++) {
       b = branches.get (i);
       if (angle0 > 180 && b.getEndPointY() < high) high = b.getEndPointY();
       if (angle0 <= 180 && b.getEndPointY() > high) high = b.getEndPointY();
@@ -62,101 +55,89 @@ class Tree
     return PApplet.abs (startY - high);
   }
 
-  public int getStartX ()
-  {
+  public int getStartX() {
     return startX;
   }
 
-  public int getStartY ()
-  {
+  public int getStartY() {
     return startY;
   }
 
-  public void update ()
-  {
+  public void update() {
     branches.clear();
     createBranches();
   }
 
-  public void display ()
-  {   
+  public void display() {   
     Branch b;
 
-    for (int i = 0; i < branches.size(); i++)
-    {
+    for (int i = 0; i < branches.size(); i++) {
       b = branches.get (i);
       b.display();
     }
   }
 
-  private void createBranches ()
-  {
-
+  private void createBranches() {
     ArrayList<SavePos> savePoints = new ArrayList<SavePos>();
     float totalAngle = angle0, x = startX, y = startY, l = 3.5f, sw = 5.0f, startAngle = totalAngle, oldAngle = startAngle, a = 255.0f;
 
-    for (int i = 0; i < input.length(); i++)
-    {
+    for (int i = 0; i < input.length(); i++) {
       char c = input.charAt (i);
 
 
-      switch (c)
-      {
-      case 'F':
-        // Linie zeichnen
-        float nextX = x + PApplet.cos (PApplet.radians (totalAngle)) * l;
-        float nextY = y + PApplet.sin (PApplet.radians (totalAngle)) * l;
+      switch (c) {
+        case 'F':
+          // Linie zeichnen
+          float nextX = x + PApplet.cos (PApplet.radians (totalAngle)) * l;
+          float nextY = y + PApplet.sin (PApplet.radians (totalAngle)) * l;
 
-        if (branches.size() == 0 || totalAngle != oldAngle)
-        {
-          float [] [] points = new float [2] [2];
-          points [0] [0] = x;
-          points [0] [1] = y;
-          points [1] [0] = nextX;
-          points [1] [1] = nextY;
+          if (branches.size() == 0 || totalAngle != oldAngle) {
+            float [] [] points = new float [2] [2];
+            points [0] [0] = x;
+            points [0] [1] = y;
+            points [1] [0] = nextX;
+            points [1] [1] = nextY;
 
-          branches.add (new Branch (parent, points, sw, totalAngle, angle, a, cc));
-          if (sw > 0.5 ) sw *= parent.random (minSW, 0.9999f);
-          a *= parent.random (0.8f, 0.99999f);
-          if (a < 160) a = 160;
-        }
-        else
-        {
-          Branch b = branches.get(branches.size()-1);
-          b.updateEnd (nextX, nextY);
-        }
-        l*= parent.random (0.75f, 1.25f);
+            branches.add (new Branch (parent, points, sw, totalAngle, angle, a, cc));
+            if (sw > 0.5 ) sw *= parent.random (minSW, 0.9999f);
+            a *= parent.random (0.8f, 0.99999f);
+            if (a < 160) a = 160;
+          }
+          else {
+            Branch b = branches.get(branches.size()-1);
+            b.updateEnd (nextX, nextY);
+          }
+          l*= parent.random (0.75f, 1.25f);
 
-        x = nextX;
-        y = nextY;
-        oldAngle = totalAngle;
-        break;
-      case '+':
-        //rechts drehen
-        totalAngle -= parent.random (angle/1.5f, angle*1.2f);
-        break;
-      case '-':
-        //links drehen
-        totalAngle += parent.random (angle/1.5f, angle*1.2f);
-        break;
-      case '[':
-        // add save point
-        savePoints.add (new SavePos (x, y, totalAngle, l, sw, a));
-        break;
-      case ']':
-        if (savePoints.size() != 0)
-        {
-          SavePos p = savePoints.get (savePoints.size() > 0 ? savePoints.size()-1 : 0);
-          x = p.x;
-          y = p.y;
-          totalAngle = p.angle;
-          l = p.l;
-          sw = p.sw;
-          a = p.a;
-          savePoints.remove(savePoints.size()-1);
-        }
-        // return to save point
-        break;
+          x = nextX;
+          y = nextY;
+          oldAngle = totalAngle;
+          break;
+        case '+':
+          //rechts drehen
+          totalAngle -= parent.random (angle/1.5f, angle*1.2f);
+          break;
+        case '-':
+          //links drehen
+          totalAngle += parent.random (angle/1.5f, angle*1.2f);
+          break;
+        case '[':
+          // add save point
+          savePoints.add (new SavePos (x, y, totalAngle, l, sw, a));
+          break;
+        case ']':
+          if (savePoints.size() != 0) {
+            SavePos p = savePoints.get (savePoints.size() > 0 ? savePoints.size()-1 : 0);
+            x = p.x;
+            y = p.y;
+            totalAngle = p.angle;
+            l = p.l;
+            sw = p.sw;
+            a = p.a;
+            savePoints.remove(savePoints.size()-1);
+          }
+          // return to save point
+          break;
       }
     }
 
@@ -164,15 +145,13 @@ class Tree
   }
 }
 
-class Branch
-{
+class Branch {
   private PApplet parent;
   private float [] [] points;
   private float sw, angle, angleDist, a;
   private int c;
-  Branch (PApplet parent, float [] [] points, float sw, float angle, float angleDist, float a, int c)
-  {
-	this.parent = parent;
+  Branch (PApplet parent, float [] [] points, float sw, float angle, float angleDist, float a, int c) {
+    this.parent = parent;
     this.c = c;
     this.a = a;
     this.angle = angle;
@@ -183,18 +162,15 @@ class Branch
     createMiddlePoints(1);
   }
 
-  public float getEndPointX()
-  {
+  public float getEndPointX() {
     return points[points.length-1] [0];
   }
 
-  public float getEndPointY()
-  {
+  public float getEndPointY() {
     return points[points.length-1] [1];
   }
 
-  private void createMiddlePoints (int i)
-  {
+  private void createMiddlePoints (int i) {
     float dis = PApplet.dist ( points [0] [0], points [0] [1], points [points.length-1] [0], points [points.length-1] [1]);
     float mangle = parent.random (-angleDist, angleDist);
     float m = parent.random (0.25f, 0.75f);
@@ -211,36 +187,30 @@ class Branch
     PApplet.arrayCopy (temp, points);
   }
 
-  public void updateEnd (float x, float y)
-  {
+  public void updateEnd (float x, float y) {
     points[points.length-1] [0] = x;
     points[points.length-1] [1] = y;
     createMiddlePoints(0);
   }
 
-  public float [] [] getPoints ()
-  {
+  public float [] [] getPoints() {
     return points;
   }
 
-  public int getColor ()
-  {
+  public int getColor() {
     return parent.color (parent.red(c), parent.green (c), parent.blue (c), a);
   }
 
-  public float getSW ()
-  {
+  public float getSW() {
     return sw;
   }
 
-  public void display ()
-  {
+  public void display() {
     parent.noFill();
     parent.stroke (parent.red(c), parent.green (c), parent.blue (c), a);
     parent.strokeWeight (sw);
     parent.beginShape();
-    for (int i = 0; i < points.length; i++)
-    {
+    for (int i = 0; i < points.length; i++) {
       parent.curveVertex (points[i] [0], points[i] [1]);
       if (i == 0 || i == points.length-1) parent.curveVertex (points[i] [0], points[i] [1]);
     }
@@ -248,11 +218,9 @@ class Branch
   }
 }
 
-class SavePos
-{
+class SavePos {
   public float x, y, angle, l, sw, a;
-  SavePos (float x, float y, float angle, float l, float sw, float a)
-  {
+  SavePos (float x, float y, float angle, float l, float sw, float a) {
     this.a = a;
     this.sw = sw;
     this.x = x;
