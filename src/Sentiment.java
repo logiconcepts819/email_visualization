@@ -38,8 +38,7 @@ public class Sentiment {
   }
 
   private String clean_text(String text) {
-    // TODO downcase 
-    return text;
+    return text.toLowerCase();
   }
 }
 
