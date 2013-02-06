@@ -55,10 +55,13 @@ public class TreeController implements AppController {
 
   private RuleLib rules_from_sentiment() {
     Rule[] rules = {
-      new Rule("F", "FF"), 
-      new Rule ("X", "F[+X]F[-X]+X")
+      new Rule("1", "FFF-[-F+F[2]-[1]]+[+F+F[1]-[1]]"), 
+      new Rule("2", "F-F-F+[2]F+F+F+F+>[3]"), 
+      new Rule("3", "F+F+F-[2]F-F-F-F->[2]"), 
+      //new Rule("F", "FF"), 
+      //new Rule ("X", "F[+X]F[-X]+X")
     };
-    return new RuleLib (rules, "X");
+    return new RuleLib (rules, "1");
   }
 }
 

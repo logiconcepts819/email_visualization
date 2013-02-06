@@ -113,6 +113,12 @@ class Tree {
           y = nextY;
           oldAngle = totalAngle;
           break;
+        case '>':
+          l *= 0.90f;
+          break;
+        case '<':
+          l *= 1.10f;
+          break;
         case '+':
           //rechts drehen
           totalAngle -= parent.random (angle/1.5f, angle*1.2f);
