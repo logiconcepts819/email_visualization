@@ -1,5 +1,4 @@
-import java.io.IOException;
-
+import java.util.HashMap;
 import processing.core.PApplet;
 
 @SuppressWarnings("serial")
@@ -7,9 +6,8 @@ public class TreeMain extends PApplet {
   static int WIDTH = 640;
   static int HEIGHT = 640;
 
-  // TODO turn make a new interface for all controllers to implement
-  private HashMap<string, ControlListener> controllers = new HashMap<string, ControlListener>();
-  private string current_controller;
+  private HashMap<String, AppController> controllers = new HashMap<String, AppController>();
+  private String current_controller;
   private TreeController tree_controller;
 
   @Override
@@ -17,11 +15,12 @@ public class TreeMain extends PApplet {
     size(WIDTH, HEIGHT);
 
     LoginController login_controller = new LoginController(this);
-    TreeController tree_controller = new TreeController(this);
+    tree_controller = new TreeController(this);
 
     controllers.put("login_controller", login_controller);
-    controllers.put("tree_controller", new TreeController(this));
-    current_controller = "login_controller";
+    controllers.put("tree_controller", tree_controller);
+    //current_controller = "login_controller";
+    current_controller = "tree_controller";
 
     // email listener for the login controller
     EmailDownloadListener email_listener = new EmailDownloadListener() {
