@@ -9,7 +9,7 @@ import processing.core.PFont;
 
 import controlP5.*;
 
-public class LoginController implements ControlListener {
+public class LoginController implements AppController {
   private static final String FONTRESOURCE = "/uhvb8a.pfb"; 
 
   private PApplet parent;
