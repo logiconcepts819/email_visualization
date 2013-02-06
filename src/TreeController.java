@@ -15,22 +15,12 @@ public class TreeController implements AppController {
     this.controlP5 = new ControlP5(parent);
     this.controlP5.addListener(this).setAutoDraw(false);
     this.parent = parent;
-    setup();
-  }
-
-  public void setup() {
-    initialize_tree();
-    //eColor = color(178, 209, 209, 240);
-
-    //controlP5.mapKeyFor(new ControlKey() {
-    //@Override
-    //public void keyEvent() {
-    //tab_focus(true);
-    //}}, PConstants.TAB);
-
   }
 
   public void display() {
+    if (tree == null) {
+      initialize_tree();
+    }
 
     parent.translate((float) tree.getStartX()/(float) width*(width - zoom*width), ((float) tree.getStartY()/(float) height)*(height - zoom*height)); 
     parent.scale(zoom);
@@ -54,13 +44,22 @@ public class TreeController implements AppController {
   }
 
   private RuleLib rules_from_sentiment() {
-    Rule[] rules = {
-      new Rule("1", "FFF-[-F+F[2]-[1]]+[+F+F[1]-[1]]"), 
-      new Rule("2", "F-F-F+[2]F+F+F+F+>[3]"), 
-      new Rule("3", "F+F+F-[2]F-F-F-F->[2]"), 
-      //new Rule("F", "FF"), 
-      //new Rule ("X", "F[+X]F[-X]+X")
-    };
+    Rule[] rules;
+
+    if (email_collection.sentiment() <= 0) {
+      rules = new Rule[] {
+        new Rule("1", "FFF-[-F+F[2]-[1]]+[+F+F[1]-[1]]"), 
+        new Rule("2", "F-F-F+[2]F+F+F+F+>[3]"), 
+        new Rule("3", "F+F+F-[2]F-F-F-F->[2]"), 
+      };
+    } else {
+      rules = new Rule[] {
+        new Rule("1", "F-F+F[++2][F+2][F-2][--2]"),
+        new Rule("2", "F+FF-F[++3][+3][-4][--4]"),
+        new Rule("3", "-[4]F-FF-FF-FF-F[4]"),
+        new Rule("4", "+[3]F+FF+FF+FF+F[3]")
+      };
+    }
     return new RuleLib (rules, "1");
   }
 }

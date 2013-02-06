@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import javax.mail.*;
 
 public class EmailDownloadThread extends Thread {
-  private static int EMAILS_TO_DOWNLOAD = 100; // while developing, hardcode a limit
+  private static int EMAILS_TO_DOWNLOAD = 20; // while developing, hardcode a limit
 
   private String proto;
   private String hostname;
@@ -80,6 +80,10 @@ public class EmailDownloadThread extends Thread {
 
         for (Message message : folder.getMessages()) {
           on_message(message);
+          emails_to_download--;
+          if (emails_to_download == 0) {
+            return;
+          }
         }
 
         // Note: Leave close(false) -- just in case we do accidentally delete a
@@ -88,10 +92,6 @@ public class EmailDownloadThread extends Thread {
 
         // hard coding a limit on the number of emails we load for development
         // purposes
-        emails_to_download--;
-        if (emails_to_download == 0) {
-          return;
-        }
       }
     }
   }

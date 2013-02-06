@@ -19,8 +19,7 @@ public class TreeMain extends PApplet {
 
     controllers.put("login_controller", login_controller);
     controllers.put("tree_controller", tree_controller);
-    //current_controller = "login_controller";
-    current_controller = "tree_controller";
+    current_controller = "login_controller";
 
     // email listener for the login controller
     EmailDownloadListener email_listener = new EmailDownloadListener() {
