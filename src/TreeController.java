@@ -19,13 +19,7 @@ public class TreeController implements AppController {
   }
 
   public void setup() {
-    Rule[] rules = {
-      new Rule("F", "FF"), 
-      new Rule ("X", "F[+X]F[-X]+X")
-    };
-    RuleLib rule_library = new RuleLib (rules, "X");
-    LSystem l_system = new LSystem (rule_library, iterations);
-    tree = new Tree (parent, l_system.getLSystem(), width/2, height/2 + Tree.rad, 270, 20.0f, 0.75f, 247);
+    initialize_tree();
     //eColor = color(178, 209, 209, 240);
 
     //controlP5.mapKeyFor(new ControlKey() {
@@ -51,7 +45,20 @@ public class TreeController implements AppController {
   @Override
   public void controlEvent(ControlEvent arg0) {
     // TODO Auto-generated method stub
+  }
 
+  private void initialize_tree() {
+    RuleLib rule_library = rules_from_sentiment();
+    LSystem l_system = new LSystem (rule_library, iterations);
+    tree = new Tree (parent, l_system.getLSystem(), width/2, height/2 + Tree.rad, 270, 20.0f, 0.75f, 247);
+  }
+
+  private RuleLib rules_from_sentiment() {
+    Rule[] rules = {
+      new Rule("F", "FF"), 
+      new Rule ("X", "F[+X]F[-X]+X")
+    };
+    return new RuleLib (rules, "X");
   }
 }
 
