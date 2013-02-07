@@ -18,6 +18,10 @@ public class Email implements Visualizable {
   private String text;
 
   Email(Message message) {
+	this.from = new String();
+	this.recipients = new ArrayList<String>();
+	this.subject = new String();
+	this.text = new String();
     try {
       this.message = message;
       this.from = message.getFrom()[0].toString();
