@@ -18,10 +18,14 @@ public class Email implements Visualizable {
   private String text;
 
   Email(Message message) {
-	this.from = new String();
-	this.recipients = new ArrayList<String>();
-	this.subject = new String();
-	this.text = new String();
+    // TODO -- if we're getting an exception it means something else is broken
+    // -- so remove these initializers and fix it later (they were added for the
+    // demo)
+    this.from = new String();
+    this.recipients = new ArrayList<String>();
+    this.subject = new String();
+    this.text = new String();
+
     try {
       this.message = message;
       this.from = message.getFrom()[0].toString();
